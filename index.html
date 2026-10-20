@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>APEX-FORGE · 旗舰算法工具库</title>
+<style>
+  :root {
+    --bg: #f7f8fa; --card: #ffffff; --ink: #1f2329; --sub: #6b7280;
+    --line: #e5e7eb; --ok: #16a34a; --bad: #dc2626; --accent: #2563eb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", Segoe UI, sans-serif;
+    line-height: 1.6; padding: 32px 16px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 28px; }
+  h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: 1px; }
+  .tag { color: var(--sub); font-size: 14px; }
+  .score {
+    display: inline-flex; align-items: center; gap: 10px; margin: 18px auto 0;
+    padding: 10px 22px; border-radius: 999px; font-weight: 700; font-size: 18px;
+    background: var(--card); border: 1px solid var(--line);
+  }
+  .score.ok { color: var(--ok); border-color: #bbf7d0; }
+  .grid { display: grid; gap: 12px; margin-top: 24px; }
+  .item {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; display: flex; align-items: center; gap: 14px;
+  }
+  .badge {
+    width: 34px; height: 34px; border-radius: 9px; flex: none;
+    display: grid; place-items: center; font-size: 18px; color: #fff;
+  }
+  .badge.ok { background: var(--ok); }
+  .badge.bad { background: var(--bad); }
+  .meta { flex: 1; }
+  .name { font-weight: 600; }
+  .detail { color: var(--sub); font-size: 13px; font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .sec { margin-top: 32px; }
+  .sec h2 { font-size: 18px; border-left: 4px solid var(--accent); padding-left: 10px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  th { background: #f1f5f9; color: var(--sub); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  code { background: #f1f5f9; padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+  footer { text-align: center; color: var(--sub); font-size: 13px; margin-top: 36px; }
+  a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>APEX-FORGE</h1>
+    <div class="tag">旗舰算法工具库 · 零依赖 · 零构建 · 集大成 / 零重写</div>
+    <div id="score" class="score">自检中…</div>
+  </header>
+
+  <div id="grid" class="grid"></div>
+
+  <div class="sec">
+    <h2>已集成的世界顶级算法</h2>
+    <table>
+      <thead><tr><th>模块</th><th>算法</th><th>权威出处</th></tr></thead>
+      <tbody>
+        <tr><td>Attention</td><td>缩放点积 / 多头注意力</td><td>Vaswani 2017 (1706.03762)</td></tr>
+        <tr><td>Norm</td><td>LayerNorm / RMSNorm</td><td>Ba 2016 / Zhang 2019 (1910.07467)</td></tr>
+        <tr><td>Optim</td><td>Adam / AdamW / RMSProp</td><td>Kingma 2015 / Loshchilov 2019</td></tr>
+        <tr><td>Init</td><td>Xavier / Kaiming</td><td>Glorot 2010 / He 2015</td></tr>
+        <tr><td>Sample</td><td>Top-k / Top-p 核采样</td><td>Fan 2018 / Holtzman 2020</td></tr>
+        <tr><td>Act</td><td>Softmax/GELU/SiLU</td><td>数值稳定实践 + Hendrycks GELU</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec">
+    <h2>快速使用</h2>
+    <pre style="background:#0f172a;color:#e2e8f0;padding:14px 16px;border-radius:12px;overflow:auto;font-size:13px"><code>// Node 无头运行自检
+node apex-forge.js
+
+// 浏览器 / 模块引用
+const { Attention, Adam, Act } = APEX;
+const out = Attention.multiHead(Q, K, V, 8);</code></pre>
+  </div>
+
+  <footer>
+    作者：晨星 (GitHub: CJX0712) · 许可：MIT · 每一个模块都站在世界顶级成果之上
+  </footer>
+</div>
+
+<script src="apex-forge.js"></script>
+<script>
+  const r = APEX.runSelfTest();
+  const grid = document.getElementById('grid');
+  let pass = 0;
+  r.forEach((x) => {
+    if (x.pass) pass++;
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML =
+      `<div class="badge ${x.pass ? 'ok' : 'bad'}">${x.pass ? '✓' : '✕'}</div>` +
+      `<div class="meta"><div class="name">${x.name}</div>` +
+      `<div class="detail">${x.detail}</div></div>`;
+    grid.appendChild(div);
+  });
+  const score = document.getElementById('score');
+  score.className = 'score ' + (pass === r.length ? 'ok' : 'bad');
+  score.textContent = `自检结果：${pass} / ${r.length} 全绿`;
+</script>
+</body>
+</html>
